@@ -4,7 +4,6 @@ import { z } from "zod";
 import { ProductCard } from "@/components/site/ProductCard";
 import { PageHero } from "@/components/site/PageShell";
 import { categoriesQuery, productsQuery } from "@/lib/catalog";
-import { OCCASIONS } from "@/lib/images";
 
 const search = z.object({
   occasion: z.string().optional(),
@@ -44,9 +43,7 @@ function Collection() {
   const cat = cats.find((c) => c.slug === slug);
 
   let list = all.filter((p) => slug === "all" || p.category_slug === slug);
-  if (s.occasion) list = list.filter((p) => p.occasions?.includes(s.occasion!));
   if (s.max) list = list.filter((p) => p.price <= s.max!);
-  if (s.stock) list = list.filter((p) => p.stock === s.stock);
   if (s.sort === "price-asc") list = [...list].sort((a, b) => a.price - b.price);
   if (s.sort === "price-desc") list = [...list].sort((a, b) => b.price - a.price);
   const page = s.page ?? 1;
@@ -69,24 +66,13 @@ function Collection() {
             </div>
           </div>
           <div>
-            <p className="mb-3 text-xs font-semibold tracking-widest text-muted-foreground">OCCASION</p>
-            <div className="flex flex-wrap gap-2">
-              {OCCASIONS.map((o) => <button key={o} onClick={() => set({ occasion: s.occasion === o ? undefined : o })} className={chip(s.occasion === o)}>{o}</button>)}
-            </div>
-          </div>
-          <div>
             <p className="mb-3 text-xs font-semibold tracking-widest text-muted-foreground">PRICE</p>
             <div className="flex flex-wrap gap-2">
               {[499, 999, 1499, 2499, 4999].map((m) => <button key={m} onClick={() => set({ max: s.max === m ? undefined : m })} className={chip(s.max === m)}>Under ₹{m}</button>)}
             </div>
           </div>
-          <div>
-            <p className="mb-3 text-xs font-semibold tracking-widest text-muted-foreground">AVAILABILITY</p>
-            <div className="flex flex-wrap gap-2">
-              {([["in_stock", "In Stock"], ["pre_order", "Pre-order"], ["out_of_stock", "Out of Stock"]] as const).map(([k, l]) => (
-                <button key={k} onClick={() => set({ stock: s.stock === k ? undefined : k })} className={chip(s.stock === k)}>{l}</button>
-              ))}
-            </div>
+          <div className="pt-2">
+            <Link to="/contact" className={chip(false) + " block text-center"}>Contact Us</Link>
           </div>
         </aside>
         <div>

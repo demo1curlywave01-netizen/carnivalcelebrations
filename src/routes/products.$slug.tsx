@@ -77,14 +77,16 @@ function ProductPage() {
       </nav>
       <div className="grid gap-10 md:grid-cols-2">
         <div className="space-y-3">
-          <Zoom src={img(images[active])} alt={p.name} />
-          <div className="flex gap-3">
-            {images.map((im, k) => (
-              <button key={k} onClick={() => setActive(k)} className={`h-20 w-20 overflow-hidden rounded-xl border-2 ${k === active ? "border-primary" : "border-transparent"}`}>
-                <img src={img(im)} alt="" className="h-full w-full object-cover" />
-              </button>
-            ))}
-          </div>
+          <Zoom src={img(images[0])} alt={p.name} />
+          {images.length > 1 && (
+            <div className="flex gap-3">
+              {images.map((im, k) => (
+                <button key={k} onClick={() => setActive(k)} className={`h-20 w-20 overflow-hidden rounded-xl border-2 ${k === active ? "border-primary" : "border-transparent"}`}>
+                  <img src={img(im)} alt="" className="h-full w-full object-cover" />
+                </button>
+              ))}
+            </div>
+          )}
         </div>
         <div>
           <h1 className="text-4xl text-primary md:text-5xl">{p.name}</h1>
@@ -137,7 +139,7 @@ function ProductPage() {
           <TabsContent value="details">{p.description} Each gift is hand-packed in our signature keepsake packaging with a complimentary greeting card.</TabsContent>
           <TabsContent value="shipping">Dispatched within 24–48 hours. Delivery in 3–6 business days across India. Free shipping on orders above ₹1,999. Perishables are shipped in temperature-safe packaging.</TabsContent>
           <TabsContent value="info"><ul className="space-y-1"><li>Category: <span className="capitalize">{p.category_slug?.replace("-", " ")}</span></li><li>Occasions: {p.occasions?.join(", ")}</li><li>Country of origin: India</li></ul></TabsContent>
-          <TabsContent value="care">Need help? Write to care@carnivalcelebrations.in or WhatsApp us, Mon–Sat, 10am–7pm IST.</TabsContent>
+          <TabsContent value="care">Need help? Write to carnivalcelebrationsordering@gmail.com or WhatsApp us at 7303480801, Mon–Sat, 10am–7pm IST.</TabsContent>
           <TabsContent value="reviews"><Reviews productId={p.id} /></TabsContent>
         </div>
       </Tabs>
@@ -154,19 +156,19 @@ function ProductPage() {
 
 function Reviews({ productId }: { productId: string }) {
   const { data: reviews = [] } = useQuery(reviewsQuery(productId));
-  const { session } = useStore();
   const qc = useQueryClient();
   const [rating, setRating] = useState(5);
+  const [authorName, setAuthorName] = useState("");
   const [body, setBody] = useState("");
   const avg = reviews.length ? reviews.reduce((s, r) => s + r.rating, 0) / reviews.length : 0;
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!session) return undefined;
-    const author = (session.user.user_metadata?.['full_name'] as string) || session.user.email?.split("@")[0] || "Customer";
-    const { error } = await supabase.from("reviews").insert({ product_id: productId, user_id: session.user.id, author, rating, body });
+    const author = authorName.trim() || "Customer";
+    const { error } = await supabase.from("reviews").insert({ product_id: productId, author, rating, body, user_id: "00000000-0000-0000-0000-000000000000" });
     if (error) { toast.error("Could not post review."); return; }
     setBody("");
+    setAuthorName("");
     toast.success("Thanks for your review!");
     qc.invalidateQueries({ queryKey: ["reviews", productId] });
   };
@@ -186,16 +188,13 @@ function Reviews({ productId }: { productId: string }) {
           {reviews.length === 0 && <p className="text-muted-foreground">Be the first to review this gift.</p>}
         </div>
       </div>
-      {session ? (
-        <form onSubmit={submit} className="space-y-3 rounded-2xl bg-secondary p-6">
-          <p className="font-semibold text-primary">Write a review</p>
-          <div className="flex gap-1">{[1, 2, 3, 4, 5].map((n) => <button type="button" key={n} onClick={() => setRating(n)} aria-label={`${n} stars`}><Star className={`h-6 w-6 ${n <= rating ? "fill-gold text-gold" : "text-border"}`} /></button>)}</div>
-          <Textarea required maxLength={1000} value={body} onChange={(e) => setBody(e.target.value)} placeholder="Share your experience" className="bg-card" />
-          <Button>Submit Review</Button>
-        </form>
-      ) : (
-        <div className="rounded-2xl bg-secondary p-6"><p><Link to="/auth" className="font-semibold text-primary underline">Sign in</Link> to write a review.</p></div>
-      )}
+      <form onSubmit={submit} className="space-y-3 rounded-2xl bg-secondary p-6">
+        <p className="font-semibold text-primary">Write a review</p>
+        <Input required placeholder="Your name" value={authorName} onChange={(e) => setAuthorName(e.target.value)} className="bg-card" />
+        <div className="flex gap-1">{[1, 2, 3, 4, 5].map((n) => <button type="button" key={n} onClick={() => setRating(n)} aria-label={`${n} stars`}><Star className={`h-6 w-6 ${n <= rating ? "fill-gold text-gold" : "text-border"}`} /></button>)}</div>
+        <Textarea required maxLength={1000} value={body} onChange={(e) => setBody(e.target.value)} placeholder="Share your experience" className="bg-card" />
+        <Button>Submit Review</Button>
+      </form>
     </div>
   );
 }

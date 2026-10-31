@@ -8,12 +8,11 @@ import { useStore } from "@/lib/store";
 export function ProductCard({ p }: { p: Product }) {
   const { addToCart, wishlist, toggleWishlist } = useStore();
   const liked = wishlist.includes(p.id);
-  const [a, b] = p.images ?? [];
+  const [a] = p.images ?? [];
   return (
     <div className="group relative overflow-hidden rounded-2xl bg-card shadow-soft transition hover:-translate-y-1 hover:shadow-lift">
       <Link to="/products/$slug" params={{ slug: p.slug }} className="relative block aspect-square overflow-hidden bg-muted">
-        <img src={img(a)} alt={p.name} loading="lazy" width={600} height={600} className="absolute inset-0 h-full w-full object-cover transition duration-500 group-hover:opacity-0" />
-        <img src={img(b ?? a)} alt="" loading="lazy" width={600} height={600} className="absolute inset-0 h-full w-full scale-105 object-cover opacity-0 transition duration-500 group-hover:scale-100 group-hover:opacity-100" />
+        <img src={img(a)} alt={p.name} loading="lazy" width={600} height={600} className="absolute inset-0 h-full w-full object-cover transition duration-500" />
         {p.stock !== "in_stock" && (
           <span className={`absolute left-3 top-3 rounded-full px-3 py-1 text-xs font-semibold ${p.stock === "pre_order" ? "bg-gold text-accent-foreground" : "bg-foreground/80 text-background"}`}>
             {STOCK_LABEL[p.stock]}

@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useSuspenseQuery } from "@tanstack/react-query";
-import { ChevronLeft, ChevronRight, Play } from "lucide-react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ProductCard } from "@/components/site/ProductCard";
 import { Newsletter } from "@/components/site/Footer";
@@ -78,14 +78,6 @@ function SectionTitle({ eyebrow, title, action }: { eyebrow: string; title: stri
 }
 
 const PRICES = [499, 999, 1499, 2499];
-const REELS = [
-  { t: "Unboxing the Grand Hamper", k: "hampers" },
-  { t: "Diwali Diya Styling", k: "home-decor" },
-  { t: "Fresh Mithai, Made Daily", k: "sweets" },
-  { t: "Corporate Gift Packing", k: "hero-2" },
-  { t: "Chai Ritual Set", k: "drinks" },
-  { t: "The Dryfruit Edit", k: "dryfruit" },
-];
 
 function Home() {
   const { data: cats } = useSuspenseQuery(categoriesQuery);
@@ -134,25 +126,6 @@ function Home() {
           {products.filter((p) => p.is_new).slice(0, 8).map((p) => <ProductCard key={p.id} p={p} />)}
         </div>
       </section>
-
-      <section className="bg-primary-deep py-16 text-primary-foreground">
-        <div className="mx-auto max-w-7xl px-4">
-          <p className="mb-2 text-xs font-semibold tracking-[0.3em] text-accent">WATCH & SHOP</p>
-          <h2 className="mb-8 text-3xl md:text-4xl">Shop by Reels</h2>
-          <div className="no-scrollbar flex snap-x gap-4 overflow-x-auto pb-2">
-            {REELS.map((r) => (
-              <div key={r.t} className="group relative aspect-[9/16] w-52 shrink-0 snap-start overflow-hidden rounded-2xl">
-                <img src={img(r.k)} alt={r.t} loading="lazy" className="h-full w-full object-cover transition duration-700 group-hover:scale-110" />
-                <div className="absolute inset-0 bg-gradient-to-t from-primary-deep/90 to-transparent" />
-                <span className="absolute left-1/2 top-1/2 grid h-12 w-12 -translate-x-1/2 -translate-y-1/2 place-items-center rounded-full bg-accent text-accent-foreground"><Play className="h-5 w-5 fill-current" /></span>
-                <p className="absolute bottom-4 left-4 right-4 font-display text-lg">{r.t}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-
 
       <Newsletter />
     </>

@@ -4,6 +4,8 @@ import { Facebook, Instagram, Youtube, Linkedin } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { Logo } from "./Logo";
+import { WHATSAPP_NUMBER } from "@/lib/images";
+import { STATIC_CATEGORIES } from "@/lib/catalog";
 
 export function Newsletter() {
   const [email, setEmail] = useState("");
@@ -30,6 +32,8 @@ export function Newsletter() {
   );
 }
 
+const INSTAGRAM_URL = "https://www.instagram.com/carnival__celebrations?utm_source=qr&exln=azhyMjA1NjcwMTFo";
+
 export function Footer() {
   return (
     <footer className="bg-primary-deep text-primary-foreground">
@@ -37,26 +41,41 @@ export function Footer() {
         <div className="space-y-4">
           <Logo inverted />
           <p className="text-sm text-primary-foreground/70">Premium gifts for every celebration — handcrafted hampers, mithai, dryfruits and decor, delivered across India.</p>
-          <div className="flex gap-3">
-            {[Instagram, Facebook, Youtube, Linkedin].map((I, i) => (
-              <a key={i} href="#" aria-label="Social link" className="grid h-9 w-9 place-items-center rounded-full bg-primary-foreground/10 hover:bg-accent hover:text-accent-foreground"><I className="h-4 w-4" /></a>
-            ))}
+          <div className="space-y-1.5 text-xs text-primary-foreground/80">
+            <p>Email: <a href="mailto:carnivalcelebrationsordering@gmail.com" className="hover:text-accent underline underline-offset-2">carnivalcelebrationsordering@gmail.com</a></p>
+            <p>Phone: <a href="tel:7303480801" className="hover:text-accent underline underline-offset-2">7303480801</a></p>
+          </div>
+          <div className="flex gap-3 pt-1">
+            <a href={INSTAGRAM_URL} target="_blank" rel="noopener noreferrer" aria-label="Instagram" className="grid h-9 w-9 place-items-center rounded-full bg-primary-foreground/10 hover:bg-accent hover:text-accent-foreground transition">
+              <Instagram className="h-4 w-4" />
+            </a>
+            <a href="#" aria-label="Facebook" className="grid h-9 w-9 place-items-center rounded-full bg-primary-foreground/10 hover:bg-accent hover:text-accent-foreground transition">
+              <Facebook className="h-4 w-4" />
+            </a>
+            <a href="#" aria-label="YouTube" className="grid h-9 w-9 place-items-center rounded-full bg-primary-foreground/10 hover:bg-accent hover:text-accent-foreground transition">
+              <Youtube className="h-4 w-4" />
+            </a>
+            <a href="#" aria-label="LinkedIn" className="grid h-9 w-9 place-items-center rounded-full bg-primary-foreground/10 hover:bg-accent hover:text-accent-foreground transition">
+              <Linkedin className="h-4 w-4" />
+            </a>
           </div>
         </div>
         <div>
-          <h4 className="mb-4 text-lg text-accent">About</h4>
+          <h4 className="mb-4 text-lg text-accent">Categories</h4>
           <ul className="space-y-2 text-sm text-primary-foreground/80">
-            <li><Link to="/our-story">Our Story</Link></li>
-            <li><Link to="/contact">Contact</Link></li>
-            <li><Link to="/blog">Blog</Link></li>
-            <li><Link to="/store-locations">Store Locations</Link></li>
+            {STATIC_CATEGORIES.map((c) => (
+              <li key={c.id}>
+                <Link to="/collections/$slug" params={{ slug: c.slug }} className="hover:text-accent transition">
+                  {c.name}
+                </Link>
+              </li>
+            ))}
           </ul>
         </div>
         <div>
           <h4 className="mb-4 text-lg text-accent">Customer Service</h4>
           <ul className="space-y-2 text-sm text-primary-foreground/80">
-            <li><Link to="/account">My Account</Link></li>
-            <li><Link to="/track-order">Track Order</Link></li>
+            <li><Link to="/contact">Contact Us</Link></li>
             <li><Link to="/privacy">Privacy Policy</Link></li>
             <li><Link to="/returns">Returns & Shipping</Link></li>
             <li><Link to="/terms">Terms & Conditions</Link></li>
@@ -65,10 +84,10 @@ export function Footer() {
         <div>
           <h4 className="mb-4 text-lg text-accent">Gifting</h4>
           <ul className="space-y-2 text-sm text-primary-foreground/80">
-            <li><Link to="/corporate-gifting">Corporate Bulk Gifting</Link></li>
-            <li><Link to="/wedding-gifting">Wedding Gifting</Link></li>
-            <li><Link to="/bulk-purchase">Bulk Purchase</Link></li>
-            <li><Link to="/become-a-partner">Become a Partner</Link></li>
+            <li><Link to="/contact" search={{ type: "corporate-gifting" }} className="hover:text-accent transition">Corporate Bulk Gifting</Link></li>
+            <li><Link to="/contact" search={{ type: "wedding-gifting" }} className="hover:text-accent transition">Wedding Gifting</Link></li>
+            <li><Link to="/contact" search={{ type: "bulk-purchase" }} className="hover:text-accent transition">Bulk Purchase</Link></li>
+            <li><Link to="/contact" search={{ type: "become-a-partner" }} className="hover:text-accent transition">Become a Partner</Link></li>
           </ul>
         </div>
       </div>
